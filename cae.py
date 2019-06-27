@@ -19,7 +19,7 @@ start = time.time()
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train Convolutional AutoEncoder and inference')
-    parser.add_argument('--num_epoch', default=2, type=int, help='the number of epochs')
+    parser.add_argument('--num_epoch', default=1, type=int, help='the number of epochs')
     parser.add_argument('--batch_size', default=100, type=int, help='mini batch size')
     parser.add_argument('--output_path', default='./data/bef_cae.npz', type=str, help='path to directory to output')
 
@@ -31,7 +31,8 @@ def load_data(sub_run):
     """load data
     """
     #sr_name = 'ocm012_' + Sub_run + '.pkl'  # filtered
-    sr_name = 'Raw_det_ocm012_' + sub_run + '.pkl'  # raw
+    #sr_name = 'Raw_det_ocm012_' + sub_run + '.pkl'  # raw
+    sr_name = 'Raw_det_ocm012_' + sub_run + '_d384.pkl'  # raw
 
     with open(sr_name, 'rb') as f:
         ocm0, ocm1, ocm2 = pickle.load(f)
@@ -80,8 +81,8 @@ def flat_feature(enc_out):
     enc_out_flat = []
 
     for i, con in enumerate(enc_out):
-        s1, s2, s3 = con.shape
-        enc_out_flat.append(con.reshape((s1 * s2 * s3,)))
+        s1, s2 = con.shape
+        enc_out_flat.append(con.reshape((s1 * s2,)))
 
     return np.array(enc_out_flat)
 
@@ -107,16 +108,20 @@ def main():
 
         # build model and train
         autoencoder = build_cae_model(n_timesteps, n_features)
+        autoencoder.summary()
         autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+        print('here1!')
         autoencoder.fit(ocm_bef, ocm_bef,
                         epochs=epochs,
                         batch_size=batch_size,
                         shuffle=True)
+        print('here2!')
 
         # inference from encoder
         layer_name = 'enc'
         encoded_layer = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer(layer_name).output)
         enc_out = encoded_layer.predict(ocm_bef)
+        print('enc_out:', enc_out.shape)
 
         enc_out = flat_feature(enc_out)  # 次元要チェック
 
