@@ -1,3 +1,7 @@
+'''
+Anomaly Detection by autoencoder. For more detail, see (https://github.com/hiram64/ocsvm-anomaly-detection)
+'''
+
 import argparse
 
 import numpy as np
@@ -48,14 +52,14 @@ def process_split(ocm0, ocm1, ocm2):
 
     # Before water intake
     phase = 0
-    ocm0_bef = ocm0[:, 0:bh * 5, phase]
-    ocm1_bef = ocm1[:, 0:bh * 5, phase]
-    ocm2_bef = ocm2[:, 0:bh * 5, phase]
+    ocm0_bef = ocm0[:, 0:bh * 4, phase]  # Train with bh=1~4, and use bh=5 later as the test set.
+    ocm1_bef = ocm1[:, 0:bh * 4, phase]
+    ocm2_bef = ocm2[:, 0:bh * 4, phase]
     # After water intake
     phase = 1
-    ocm0_aft = ocm0[:, 0:bh * 5, phase]
-    ocm1_aft = ocm1[:, 0:bh * 5, phase]
-    ocm2_aft = ocm2[:, 0:bh * 5, phase]
+    ocm0_aft = ocm0[:, 0:bh * 4, phase]
+    ocm1_aft = ocm1[:, 0:bh * 4, phase]
+    ocm2_aft = ocm2[:, 0:bh * 4, phase]
     # allocate to one variable
     ocm_bef = np.zeros((ocm0_bef.shape[0], ocm0_bef.shape[1], 3))
     ocm_aft = np.zeros((ocm0_aft.shape[0], ocm0_aft.shape[1], 3))

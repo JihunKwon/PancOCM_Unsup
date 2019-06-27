@@ -8,11 +8,12 @@ from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Anomaly Detection by One Class SVM')
-    parser.add_argument('--data_path', default='./data/cifar10_cae.npz', type=str, help='path to dataset')
+    parser.add_argument('--data_path', default='./data/bef_cae.npz', type=str, help='path to dataset')
     parser.add_argument('--normal_label', default=8, type=int, help='label defined as anomality')
-    parser.add_argument('--rate_normal_train', default=0.82, type=float, help='rate of normal data to use in training')
-    parser.add_argument('--rate_anomaly_test', default=0.1, type=float,
-                        help='rate of abnormal data versus normal data. default is 10:1')
+    parser.add_argument('--rate_normal_train', default=0.75, type=float,
+                        help='rate of normal data to use in training. Bh=1~4 is used for trainin. Bh=5 is for test')
+    parser.add_argument('--rate_anomaly_test', default=0.2, type=float,
+                        help='rate of abnormal data versus normal data. Bh=5 is normal, Bh=6~10 is anomal.')
     parser.add_argument('--test_rep_count', default=10, type=int, help='count of repeat of test for a trained model')
 
     args = parser.parse_args()
