@@ -11,6 +11,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import Pre_processing
 
 from sklearn import preprocessing, metrics
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -22,7 +23,34 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from keras.utils import plot_model
 
+num_subject = 1
+num_train = 3
+num_test = 10 - num_train
+num_ocm = 3
+
 # Read the dataset
+for fidx in range(0, num_subject*2):
+    ocm0, ocm1, ocm2 = Pre_processing.preprocessing(fidx)
+
+    # set all OCM shape same
+    ocm1 = ocm1[:, :np.size(ocm0[1])]
+    ocm2 = ocm2[:, :np.size(ocm0[1])]
+    print('ocm0 shape', ocm0.shape) # (350, 16934)
+
+    # Split to train and test bh
+    ocm0_train = ocm0[:, :num_train*int(np.size(ocm0[1])/5)]
+    ocm1_train = ocm1[:, :num_train*int(np.size(ocm1[1])/5)]
+    ocm2_train = ocm2[:, :num_train*int(np.size(ocm2[1])/5)]
+    ocm0_test = ocm0[:, num_train*int(np.size(ocm0[1])/5):-1]
+    ocm1_test = ocm1[:, num_train*int(np.size(ocm1[1])/5):-1]
+    ocm2_test = ocm2[:, num_train*int(np.size(ocm2[1])/5):-1]
+
+    # Combine three OCM
+    ocm_train = np.concatenate([ocm0_train, ocm1_train, ocm2_train], 0)
+    print('ocm_train shape', ocm_train.shape)
+
+
+
 csv = pd.read_csv('creditcard.csv')
 test_split = 0.3 # portion of data used for testing
 val_split = 0.2  # portion of training data used for validation
