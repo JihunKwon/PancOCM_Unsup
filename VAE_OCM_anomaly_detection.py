@@ -1,7 +1,7 @@
 # Anomaly detection with Variational Autoencoder
 # Reference:
-# [1] https://www.kaggle.com/sharaman/fraud-detection-with-variational-autoencoder
-# [2] https://www.kaggle.com/kmader/vae-to-detect-anomalies-on-digits
+# [1] https://www.kaggle.com/kmader/vae-to-detect-anomalies-on-digits (unsupervised)
+# [2] https://www.kaggle.com/sharaman/fraud-detection-with-variational-autoencoder (self-supervised)
 
 # This kernel trains a Variational Autoencoder in Keras with Gaussian input and output.
 
@@ -155,7 +155,7 @@ for fidx in range(0, num_subject*2, 2):
 
 
     # train model
-    n_epochs = 10
+    n_epochs = 2
     batch_size = 128
 
     early_stopping = EarlyStopping(monitor='loss', patience=10, min_delta=1e-5) #stop training if loss does not decrease with at least 0.00001
@@ -210,28 +210,7 @@ for fidx in range(0, num_subject*2, 2):
     ax1.legend();
     fig.savefig('roc_fidx'+str(fidx)+'_ch'+str(ocm_channel)+'.png')
 
-
-    '''
-    # Apply simple Linear Discriminant Analysis to learned features (the latent representations):
-    with_labels_encoded = encoder.predict(with_labels[:, :-1], batch_size=128)
-
-    X = with_labels_encoded
-    y = with_labels[:, -1]
-
-    clf = LinearDiscriminantAnalysis()
-    clf.fit(X, y)
-
-    pred = clf.predict(X)
-
-#    print("AUC(ROC): " + str(metrics.roc_auc_score(y, pred)))
-    print("Precision: " + str(metrics.precision_score(y, pred)))
-    print("Recall: " + str(metrics.recall_score(y, pred)))
-    print("F1 score: " + str(metrics.f1_score(y, pred)))
-
-    tn, fp, fn, tp = metrics.confusion_matrix(y, pred).ravel()
-
-    print("False positives: " + str(fp))
-    print("True positives: " + str(tp))
-    print("False negatives: " + str(fn))
-    print("True negateives: " + str(tn))
-    '''
+    ## Get a specific TPR corresponds to FPR we define
+    FPR_my = 0.1
+    temp_arg = np.where(fpr < FPR_my) # get argument where lower than FPR_my
+    TPR_my = tpr[len(temp_arg[0])] # Get TPR corresponds to FPR_my
