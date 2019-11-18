@@ -3,16 +3,37 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 import time
+import pickle
 import statistics
 
 # Load the data
 out_list = []
+
+#Jihun Local
+
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_01_20180928\\run1.npy") #Before water
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_01_20180928\\run2.npy") #After water
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_01_20181102\\run1.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_01_20181102\\run2.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181102\\run1.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181102\\run2.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181220\\run1.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181220\\run2.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_03_20190228\\run1.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_03_20190228\\run2.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_03_20190320\\run1.npy")
+out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_03_20190320\\run2.npy")
+
+sr_list = ['s1r1', 's1r1', 's1r2', 's1r2', 's2r1', 's2r1', 's2r2', 's2r2', 's3r1', 's3r1', 's3r2', 's3r2']
+rep_list = [8196, 8196, 8192, 8192, 6932, 6932, 3690, 3690, 3401, 3401, 3690, 3690]
+
+'''
 out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181220\\run1.npy")
 out_list.append("C:\\Users\\Kwon\\Documents\\Panc_OCM\\Subject_02_20181220\\run2.npy")
 
 sr_list = ['s2r2', 's2r2']
 rep_list = [3690, 3690]
-
+'''
 num_train = 3
 num_test = 10 - num_train
 num_ocm = 3
@@ -63,6 +84,7 @@ def outlier_remove(Sub_run_name, c0, ocm0):  # input subject and run name
 
 
 def preprocessing(fidx):
+    '''
     Sub_run_name = sr_list[fidx]
     in_filename = out_list[fidx]
     ocm = np.load(in_filename)
@@ -162,6 +184,16 @@ def preprocessing(fidx):
         tr2 = ocm2_filt[:, p]
         ocm1_low[:, p] = np.convolve(np.sqrt(np.square(tr1)), f1, 'same')
         ocm2_low[:, p] = np.convolve(np.sqrt(np.square(tr2)), f1, 'same')
+    '''
+
+    ## use pre-saved parameters
+    fname = 'ocm_low_fidx'+str(fidx)+'.pkl'
+    #with open(fname, 'wb') as f:
+    #    pickle.dump([ocm0_low, ocm1_low, ocm2_low], f)
+
+    print('Reading file: ', fname)
+    with open(fname, 'rb') as f:
+        ocm0_low, ocm1_low, ocm2_low = pickle.load(f)
+
 
     return ocm0_low, ocm1_low, ocm2_low
-
