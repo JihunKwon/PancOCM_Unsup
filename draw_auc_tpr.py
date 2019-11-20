@@ -42,12 +42,13 @@ for fidx in range(0, 6, 1):
 for fidx in range(0, 6, 1):
     ax_auc0.plot(x, auc_score[fidx, 0, :], marker='o', label=sr_list[fidx]) # ocm0
     ax_auc1.plot(x, auc_score[fidx, 1, :], marker='o', label=sr_list[fidx]) # ocm1
-    ax_auc2.plot(x, auc_score[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
     ax_auc3.plot(x, auc_score[fidx, 3, :], marker='o', label=sr_list[fidx]) # ocm3
     ax_tpr0.plot(x, TPR_my[fidx, 0, :], marker='o', label=sr_list[fidx]) # ocm0
     ax_tpr1.plot(x, TPR_my[fidx, 1, :], marker='o', label=sr_list[fidx]) # ocm1
-    ax_tpr2.plot(x, TPR_my[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
     ax_tpr3.plot(x, TPR_my[fidx, 3, :], marker='o', label=sr_list[fidx]) # ocm3
+    if fidx != 5: # The data in OCM2 for s3_exp2 in state 2 is strange. We don't use this
+        ax_auc2.plot(x, auc_score[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
+        ax_tpr2.plot(x, TPR_my[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
 
 ax_auc0.legend(loc = 'best')
 ax_tpr0.legend(loc = 'best')

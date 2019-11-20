@@ -120,9 +120,16 @@ for fidx in range(0, num_subject*2, 2):
             ocm_test_post = ocm2_post_3d
         # Combine three OCM
         elif ocm_channel is 3: # All OCM
-            ocm_train = np.concatenate([ocm0_train, ocm1_train, ocm2_train], 0)
-            ocm_test_pre = np.concatenate([ocm0_test_pre, ocm1_test_pre, ocm2_test_pre], 0)
-            ocm_test_post = np.concatenate([ocm0_post_3d, ocm1_post_3d, ocm2_post_3d], 0)
+            if fidx <= 8:
+                ocm_train = np.concatenate([ocm0_train, ocm1_train, ocm2_train], 0)
+                ocm_test_pre = np.concatenate([ocm0_test_pre, ocm1_test_pre, ocm2_test_pre], 0)
+                ocm_test_post = np.concatenate([ocm0_post_3d, ocm1_post_3d, ocm2_post_3d], 0)
+                print('Here! A_fidx:'+str(fidx))
+            else: # The data in OCM2 for s3_exp2 in state 2 is strange. We don't use this
+                print('Here! B_fidx:'+str(fidx))
+                ocm_train = np.concatenate([ocm0_train, ocm1_train], 0)
+                ocm_test_pre = np.concatenate([ocm0_test_pre, ocm1_test_pre], 0)
+                ocm_test_post = np.concatenate([ocm0_post_3d, ocm1_post_3d], 0)
 
         print('ocm_train shape', ocm_train.shape) # (350, 10110)
         print('ocm_test_pre shape', ocm_test_pre.shape) # (350, 6743)
@@ -294,6 +301,8 @@ for fidx in range(0, num_subject*2, 2):
         ax2.set_ylabel('TPR when FPR is 0.1')
         fig.savefig('roc_'+Sub_run_name+'_ch'+str(ocm_channel)+'_'+filt_str+'.png')
 
+        '''
         model_json_str = vae.to_json()
         open('model_'+Sub_run_name+'_ch'+str(ocm_channel)+'_'+filt_str+'.json', 'w').write(model_json_str)
         vae.save_weights('model_'+Sub_run_name+'_ch'+str(ocm_channel)+'_'+filt_str+'_weights.h5');
+        '''
