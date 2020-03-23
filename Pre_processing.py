@@ -41,9 +41,11 @@ num_ocm = 3
 num_bh = 5 # number of bh in each state
 s_new = 296  # the depth your interest
 
-def outlier_remove(Sub_run_name, c0, ocm0):  # input subject and run name
+def outlier_remove(Sub_run_name, c0, ocm0, ocm1, ocm2):  # input subject and run name
     count = 0
     ocm0_new = np.zeros(np.shape(ocm0))
+    ocm1_new = np.zeros(np.shape(ocm1))
+    ocm2_new = np.zeros(np.shape(ocm2))
     if Sub_run_name is 's1r1':
         for p in range(0, c0):
             if ocm0[-1, p] > -200:
@@ -81,7 +83,9 @@ def outlier_remove(Sub_run_name, c0, ocm0):  # input subject and run name
         count = ocm0_new.shape[1]
 
     ocm0_new = ocm0_new[:, 0:count]
-    return ocm0_new
+    ocm1_new = ocm1[:, 0:count]
+    ocm2_new = ocm2[:, 0:count]
+    return ocm0_new, ocm1_new.astype(float), ocm2_new.astype(float)
 
 
 def preprocessing(fidx):
@@ -118,7 +122,7 @@ def preprocessing(fidx):
     t_sub = int(c0_new / num_bh)
 
     # Manually remove outlier. (OCM0 contains about 0.5% of outlier)
-    ocm0_new = outlier_remove(Sub_run_name, c0_new, ocm0)
+    ocm0_new, ocm1, ocm2 = outlier_remove(Sub_run_name, c0_new, ocm0, ocm1, ocm2)
     s, c0_new_removed = np.shape(ocm0_new)
     t_sub_removed = int(c0_new_removed / num_bh)
     dif = ocm0.shape[1]-ocm0_new.shape[1]
@@ -189,6 +193,7 @@ def preprocessing(fidx):
     
 
     ## use pre-saved parameters
+    filt_str = 'lowpass'
     fname = 'ocm_low_fidx'+str(fidx)+'.pkl'
     #with open(fname, 'wb') as f:
     #    pickle.dump([ocm0_low, ocm1_low, ocm2_low], f)

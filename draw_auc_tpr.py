@@ -46,7 +46,7 @@ for fidx in range(0, 6, 1):
     ax_tpr0.plot(x, TPR_my[fidx, 0, :], marker='o', label=sr_list[fidx]) # ocm0
     ax_tpr1.plot(x, TPR_my[fidx, 1, :], marker='o', label=sr_list[fidx]) # ocm1
     ax_tpr3.plot(x, TPR_my[fidx, 3, :], marker='o', label=sr_list[fidx]) # ocm3
-    if fidx != 5: # The data in OCM2 for s3_exp2 in state 2 is strange. We don't use this
+    if fidx < 5: # The data in OCM2 for s3_exp2 in state 2 is strange. We don't use this
         ax_auc2.plot(x, auc_score[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
         ax_tpr2.plot(x, TPR_my[fidx, 2, :], marker='o', label=sr_list[fidx]) # ocm2
 
@@ -94,7 +94,8 @@ plt.xticks(np.arange(6, 11, 1))
 
 fig_auc.savefig('AUC.png')
 fig_tpr.savefig('TPR.png')
-
+plt.close()
+plt.close()
 
 
 

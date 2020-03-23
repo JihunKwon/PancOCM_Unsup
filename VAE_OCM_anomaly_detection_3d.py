@@ -48,14 +48,7 @@ for fidx in range(0, num_subject*2, 2):
     print('state2 importing...')
     ocm0_post_, ocm1_post, ocm2_post, filt_str = Pre_processing.preprocessing(fidx+1)
 
-    # Scaling max to 1
-    ocm0_pre = ocm0_pre / np.max(ocm0_pre)
-    ocm1_pre = ocm1_pre / np.max(ocm1_pre)
-    ocm2_pre = ocm2_pre / np.max(ocm2_pre)
-    ocm0_post_ = ocm0_post_ / np.max(ocm0_post_)
-    ocm1_post = ocm1_post / np.max(ocm1_post)
-    ocm2_post = ocm2_post / np.max(ocm2_post)
-
+    ocm1_pre.astype(float)
     # set all OCM shape same
     ocm1_pre = ocm1_pre[:, :np.size(ocm0_pre[1])]
     ocm2_pre = ocm2_pre[:, :np.size(ocm0_pre[1])]
@@ -68,6 +61,45 @@ for fidx in range(0, num_subject*2, 2):
     print('ocm0 shape post', ocm0_post_.shape) # (350, 16484)
     print('ocm1 shape post', ocm1_post.shape) # (350, 16484)
     print('ocm2 shape post', ocm2_post.shape) # (350, 16484)
+
+    '''
+    # Scaling max of the entire data to 1
+    ocm0_pre = ocm0_pre / np.max(ocm0_pre)
+    ocm1_pre = ocm1_pre / np.max(ocm1_pre)
+    ocm2_pre = ocm2_pre / np.max(ocm2_pre)
+    ocm0_post_ = ocm0_post_ / np.max(ocm0_post_)
+    ocm1_post = ocm1_post / np.max(ocm1_post)
+    ocm2_post = ocm2_post / np.max(ocm2_post)
+    '''
+
+    '''
+    # Standardization
+    sc = preprocessing.StandardScaler()
+    ocm0_pre = sc.fit_transform(ocm0_pre)
+    ocm1_pre = sc.fit_transform(ocm1_pre)
+    ocm2_pre = sc.fit_transform(ocm2_pre)
+    ocm0_post_ = sc.fit_transform(ocm0_post_)
+    ocm1_post = sc.fit_transform(ocm1_post)
+    ocm2_post = sc.fit_transform(ocm2_post)
+    '''
+
+
+
+    # Normalization min:0, max:1
+    for trace in range(0, ocm0_pre.shape[1]): # State 1
+        ms = preprocessing.MinMaxScaler()
+        c0 = ms.fit_transform(ocm0_pre[:, trace].reshape(-1, 1))
+        c1 = ms.fit_transform(ocm1_pre[:, trace].reshape(-1, 1))
+        c2 = ms.fit_transform(ocm2_pre[:, trace].reshape(-1, 1))
+        ocm0_pre[:, trace] = c0[:, 0]
+        ocm1_pre[:, trace] = c1[:, 0]
+        ocm2_pre[:, trace] = c2[:, 0]
+
+    for trace in range(0, ocm0_post_.shape[1]): # State 2
+        ocm0_post_[:, trace] = (ocm0_post_[:, trace] - np.min(ocm0_post_[:, trace])) / (np.max(ocm0_post_[:, trace]) - np.min(ocm0_post_[:, trace]))
+        ocm1_post[:, trace] = (ocm1_post[:, trace] - np.min(ocm1_post[:, trace])) / (np.max(ocm1_post[:, trace]) - np.min(ocm1_post[:, trace]))
+        ocm2_post[:, trace] = (ocm2_post[:, trace] - np.min(ocm2_post[:, trace])) / (np.max(ocm2_post[:, trace]) - np.min(ocm2_post[:, trace]))
+
 
     ## Store all bh in state 2
     if ocm0_post_.shape[1] % 5 != 0: # if array size is not devided by 5 (# of bh), shorten it to reshape it later

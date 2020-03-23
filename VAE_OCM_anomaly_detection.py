@@ -151,6 +151,7 @@ for fidx in range(0, num_subject*2, 2):
     vae.add_loss(vae_loss)
     vae.compile(optimizer='rmsprop')
     vae.summary()
+    #plot_model(vae, to_file='model.png')
 
 
 
